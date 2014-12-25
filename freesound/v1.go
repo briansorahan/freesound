@@ -4,6 +4,10 @@ type ClientV1 struct {
 	apiKey string
 }
 
-func NewClientV1(apiKey string) *Client {
-	return &ClientV1{apiKey}
+func (c *ClientV1) SoundSearch(query string) (SoundSearchResult, error) {
+}
+
+func NewClientV1(apiKey string) (Client, error) {
+	c := ClientV1{apiKey}
+	return &c, nil
 }

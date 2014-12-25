@@ -4,6 +4,7 @@ type ClientV2 struct {
 	apiKey string
 }
 
-func NewClientV2(apiKey string) *Client {
-	return &ClientV2{apiKey}
+func NewClientV2(apiKey string) (Client, error) {
+	c := ClientV2{apiKey}
+	return &c, nil
 }
