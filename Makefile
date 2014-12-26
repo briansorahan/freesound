@@ -1,16 +1,19 @@
-PROGS = freesnd
+PROGS = fsnd
 
 LIBS = freesound
 
-.PHONY: freesound
+.PHONY: all clean test freesound
 
-all: $(PROGS) $(LIBS)
+all: $(LIBS) $(PROGS)
 
-freesnd: freesnd.go
-	go build freesnd.go
+fsnd: fsnd.go
+	go build $^
 
 freesound:
 	cd freesound && go install -a
 
 clean:
 	rm -rf $(PROGS) *~
+
+test:
+	cd freesound && go test
