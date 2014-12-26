@@ -5,7 +5,7 @@ golang client and command-line tool for the freesound API
 
 ## Status
 
-[![Build Status](https://travis-ci.org/briansorahan/freesound-go.svg?branch=master)](https://travis-ci.org/briansorahan/freesound-go)
+[![Build Status](https://drone.io/github.com/briansorahan/freesound-go/status.png)](https://drone.io/github.com/briansorahan/freesound-go/latest)
 
 ## Usage
 
