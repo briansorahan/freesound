@@ -1,4 +1,4 @@
-freesound-go
+freesound
 ============
 
 golang client and command-line tool for the freesound API
