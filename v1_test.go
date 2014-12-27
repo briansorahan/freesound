@@ -41,7 +41,7 @@ func TestClientUrl(t *testing.T) {
 	}
 }
 
-func TestSoundSearch(t *testing.T) {
+func TestSoundSearchV1(t *testing.T) {
 	c := getClient(t)
 	_, err := c.SoundSearch("cat meow")
 	if err != nil {
