@@ -20,4 +20,5 @@ type SoundSearchResult struct {
 
 type Client interface {
 	SoundSearch(query string) (*SoundSearchResult, error)
+	Version() int
 }

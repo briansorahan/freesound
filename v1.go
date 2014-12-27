@@ -29,6 +29,10 @@ func (c *ClientV1) Url(path string, values url.Values) string {
 	return u.String()
 }
 
+func (c *ClientV1) Version() int {
+	return V1
+}
+
 func (c *ClientV1) SoundSearch(query string) (*SoundSearchResult, error) {
 	values := url.Values{}
 	values.Add("q", query)
