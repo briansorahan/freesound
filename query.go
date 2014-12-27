@@ -37,7 +37,7 @@ func getValues(query interface{}) (url.Values, error) {
 	if v, ok := query.(SoundSearchQuery); ok {
 		addValue(values, "q", v.Query)
 		addIntValue(values, "p", v.Page)
-		addValue(values, "f", v.Filter)
+		addValue(values, "f", v.Filter.String())
 		addValue(values, "s", v.Sort)
 		addValue(values, "fields", v.Fields)
 		addIntValue(values, "sounds_per_page", v.SoundsPerPage)
