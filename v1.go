@@ -18,6 +18,7 @@ type ClientV1 struct {
 	httpClient *http.Client
 }
 
+// Url return a url used to query the freesound v1 API
 func (c *ClientV1) Url(path string, values url.Values) string {
 	values.Add("api_key", c.apiKey)
 	u := url.URL{
@@ -29,10 +30,13 @@ func (c *ClientV1) Url(path string, values url.Values) string {
 	return u.String()
 }
 
+// Version return the client version
 func (c *ClientV1) Version() int {
 	return V1
 }
 
+// SoundSearch query the freesound v1 API sound search resource
+// see http://www.freesound.org/docs/api/resources_apiv1.html#sound-search-resource
 func (c *ClientV1) SoundSearch(query SoundSearchQuery) (*SoundSearchResult, error) {
 	const method string = "GET"
 	const path string = "sounds/search"
@@ -62,6 +66,7 @@ func (c *ClientV1) SoundSearch(query SoundSearchQuery) (*SoundSearchResult, erro
 	return results, nil
 }
 
+// NewClientV1 initialize a new freesound v1 API client
 func NewClientV1(apiKey string) (Client, error) {
 	c := ClientV1{
 		apiKey,
