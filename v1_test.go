@@ -47,4 +47,12 @@ func TestSoundSearchV1(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	bc, err := NewClientV1("FOOBAR")
+	if err != nil {
+		t.Fatal(err)
+	}
+	_, err = bc.SoundSearch("hinge creak")
+	if err == nil {
+		t.Fail()
+	}
 }

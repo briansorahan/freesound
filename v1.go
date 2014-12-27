@@ -34,23 +34,30 @@ func (c *ClientV1) Version() int {
 }
 
 func (c *ClientV1) SoundSearch(query string) (*SoundSearchResult, error) {
+	const method string = "GET"
+	const path string = "sounds/search"
+
 	values := url.Values{}
 	values.Add("q", query)
-	request, err := http.NewRequest("GET", c.Url("sounds/search", values), nil)
+	loc := c.Url(path, values)
+	request, err := http.NewRequest(method, loc, nil)
 	if err != nil {
 		return nil, err
 	}
-	r, err := c.httpClient.Do(request)
+	response, err := c.httpClient.Do(request)
 	if err != nil {
 		return nil, err
 	}
-	dec := json.NewDecoder(r.Body)
-	response := new(SoundSearchResult)
-	err = dec.Decode(response)
+	if response.StatusCode != 200 {
+		return nil, httpError(method, path, response.StatusCode)
+	}
+	dec := json.NewDecoder(response.Body)
+	results := new(SoundSearchResult)
+	err = dec.Decode(results)
 	if err != nil {
 		return nil, err
 	}
-	return response, nil
+	return results, nil
 }
 
 func NewClientV1(apiKey string) (Client, error) {
