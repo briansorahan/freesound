@@ -18,7 +18,3 @@ func NewClient(apiKey string, version int) (Client, error) {
 		return nil, fmt.Errorf("unrecognized version %d", version)
 	}
 }
-
-func httpError(method, url string, code int) error {
-	return fmt.Errorf("%s %s returned %d", method, url, code)
-}

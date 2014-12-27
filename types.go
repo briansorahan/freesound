@@ -1,9 +1,26 @@
 package freesound
 
+type ApiError struct {
+	StatusCode  int    `json:"status_code,omitempty"`
+	Explanation string `json:"explanation,omitempty"`
+	Type        string `json:"type,omitempty"`
+	Error       bool   `json:"error,omitempty"`
+}
+
 type User struct {
 	Username string `json:"username,omitempty"`
 	URL      string `json:"url,omitempty"`
 	Ref      string `json:"ref,omitempty"`
+}
+
+type SoundSearchQuery struct {
+	Query         string
+	Page          int
+	Filter        string
+	Sort          string
+	Fields        string
+	SoundsPerPage int
+	GroupInPacks  bool
 }
 
 type SoundSearchResult struct {
@@ -19,6 +36,6 @@ type SoundSearchResult struct {
 }
 
 type Client interface {
-	SoundSearch(query string) (*SoundSearchResult, error)
+	SoundSearch(query SoundSearchQuery) (*SoundSearchResult, error)
 	Version() int
 }

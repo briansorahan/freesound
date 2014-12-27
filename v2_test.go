@@ -16,7 +16,7 @@ func TestSoundSearchV2(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	_, err = c.SoundSearch("dog bark")
+	_, err = c.SoundSearch(SoundSearchQuery{Query:"dog bark"})
 	if err == nil {
 		t.Fail()
 	}

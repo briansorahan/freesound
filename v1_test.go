@@ -43,7 +43,7 @@ func TestClientUrl(t *testing.T) {
 
 func TestSoundSearchV1(t *testing.T) {
 	c := getClient(t)
-	_, err := c.SoundSearch("cat meow")
+	_, err := c.SoundSearch(SoundSearchQuery{Query:"cat meow"})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -51,7 +51,7 @@ func TestSoundSearchV1(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	_, err = bc.SoundSearch("hinge creak")
+	_, err = bc.SoundSearch(SoundSearchQuery{Query:"hinge creak"})
 	if err == nil {
 		t.Fail()
 	}

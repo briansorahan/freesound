@@ -33,12 +33,14 @@ func (c *ClientV1) Version() int {
 	return V1
 }
 
-func (c *ClientV1) SoundSearch(query string) (*SoundSearchResult, error) {
+func (c *ClientV1) SoundSearch(query SoundSearchQuery) (*SoundSearchResult, error) {
 	const method string = "GET"
 	const path string = "sounds/search"
 
-	values := url.Values{}
-	values.Add("q", query)
+	values, err := getValues(query)
+	if err != nil {
+		return nil, err
+	}
 	loc := c.Url(path, values)
 	request, err := http.NewRequest(method, loc, nil)
 	if err != nil {
@@ -49,7 +51,7 @@ func (c *ClientV1) SoundSearch(query string) (*SoundSearchResult, error) {
 		return nil, err
 	}
 	if response.StatusCode != 200 {
-		return nil, httpError(method, path, response.StatusCode)
+		return nil, apiError(method, loc, response)
 	}
 	dec := json.NewDecoder(response.Body)
 	results := new(SoundSearchResult)
