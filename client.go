@@ -2,7 +2,6 @@ package freesound
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"net/http"
 )
@@ -46,13 +45,8 @@ func (c *Client) GetUser(name string) (*User, error) {
 	return u, nil
 }
 
-// SoundSearch searches for sounds.
-func (c *Client) SoundSearch(query SoundSearchQuery) (*SoundSearchResult, error) {
-	return nil, errors.New("Not Implemented")
-}
-
-// NewClient creates a new freesound API client.
-func NewClient(token string) (*Client, error) {
+// New creates a new freesound API client.
+func New(token string) (*Client, error) {
 	return &Client{
 		Token:      token,
 		httpClient: &http.Client{},
