@@ -5,19 +5,22 @@ import (
 	"strconv"
 )
 
-type ApiError struct {
+// APIError represents an error that comes back from the freesound API.
+type APIError struct {
 	StatusCode  int    `json:"status_code,omitempty"`
 	Explanation string `json:"explanation,omitempty"`
 	Type        string `json:"type,omitempty"`
 	Error       bool   `json:"error,omitempty"`
 }
 
+// User represents a user of the freesound API.
 type User struct {
 	Username string `json:"username,omitempty"`
 	URL      string `json:"url,omitempty"`
 	Ref      string `json:"ref,omitempty"`
 }
 
+// SoundSearchQuery represents the fields of a sound search.
 type SoundSearchQuery struct {
 	Query         string
 	Page          int
@@ -28,8 +31,10 @@ type SoundSearchQuery struct {
 	GroupInPacks  bool
 }
 
+// SoundSearchFilter allows you to filter the results of a sound
+// search query.
 type SoundSearchFilter struct {
-	Id               int
+	ID               int
 	Username         string
 	Created          string
 	OriginalFilename string
@@ -56,6 +61,19 @@ type SoundSearchFilter struct {
 	Comments         int
 }
 
+func (filt *SoundSearchFilter) String() string {
+	buf := bytes.Buffer{}
+	writeInt(buf, "id", filt.ID)
+	writeString(buf, " username", filt.Username)
+	writeString(buf, " created", filt.Created)
+	writeString(buf, " original_filename", filt.OriginalFilename)
+	writeString(buf, " description", filt.Description)
+	writeString(buf, " tag", filt.Tag)
+	writeString(buf, " license", filt.License)
+	writeBool(buf, " is_remix", filt.IsRemix)
+	return buf.String()
+}
+
 // writeString Write a string value to a byte buffer if it is not
 // the empty string
 func writeString(buf bytes.Buffer, key, val string) {
@@ -74,19 +92,7 @@ func writeBool(buf bytes.Buffer, key string, val bool) {
 	buf.WriteString(key + ":" + strconv.FormatBool(val))
 }
 
-func (self *SoundSearchFilter) String() string {
-	buf := bytes.Buffer{}
-	writeInt(buf,    "id", self.Id)
-	writeString(buf, " username", self.Username)
-	writeString(buf, " created", self.Created)
-	writeString(buf, " original_filename", self.OriginalFilename)
-	writeString(buf, " description", self.Description)
-	writeString(buf, " tag", self.Tag)
-	writeString(buf, " license", self.License)
-	writeBool(buf,   " is_remix", self.IsRemix)
-	return buf.String()
-}
-
+// SoundSearchResult represents the result of a sound search.
 type SoundSearchResult struct {
 	URL              string   `json:"url,omitempty"`
 	OriginalFilename string   `json:"original_filename,omitempty"`
@@ -95,11 +101,12 @@ type SoundSearchResult struct {
 	Serve            string   `json:"serve,omitempty"`
 	Type             string   `json:"type,omitempty"`
 	Ref              string   `json:"ref,omitempty"`
-	Id               int      `json:"id,omitempty"`
+	ID               int      `json:"id,omitempty"`
 	Pack             string   `json:"pack,omitempty"`
 }
 
+// Client represents a freesound API client.
 type Client interface {
 	SoundSearch(query SoundSearchQuery) (*SoundSearchResult, error)
-	Version() int
+	Version() Version
 }

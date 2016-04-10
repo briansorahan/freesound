@@ -5,19 +5,17 @@ import (
 )
 
 func TestNewClientV2(t *testing.T) {
-	_, err := NewClientV2("API_KEY")
-	if err != nil {
+	if _, err := newClientV2("API_KEY"); err != nil {
 		t.Fatal(err)
 	}
 }
 
 func TestSoundSearchV2(t *testing.T) {
-	c, err := NewClientV2("API_KEY")
+	c, err := newClientV2("API_KEY")
 	if err != nil {
 		t.Fatal(err)
 	}
-	_, err = c.SoundSearch(SoundSearchQuery{Query:"dog bark"})
-	if err == nil {
+	if _, err = c.SoundSearch(SoundSearchQuery{Query: "dog bark"}); err == nil {
 		t.Fail()
 	}
 }

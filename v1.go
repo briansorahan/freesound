@@ -8,36 +8,36 @@ import (
 )
 
 const (
-	SchemeV1   = "http"
-	HostV1     = "www.freesound.org"
-	BasePathV1 = "api"
+	schemeV1   = "http"
+	hostV1     = "www.freesound.org"
+	basePathV1 = "api"
 )
 
-type ClientV1 struct {
+type clientV1 struct {
 	apiKey     string
 	httpClient *http.Client
 }
 
-// Url return a url used to query the freesound v1 API
-func (c *ClientV1) Url(path string, values url.Values) string {
+// URL return a url used to query the freesound v1 API
+func (c *clientV1) URL(path string, values url.Values) string {
 	values.Add("api_key", c.apiKey)
 	u := url.URL{
-		Scheme:   SchemeV1,
-		Host:     HostV1,
-		Path:     strings.Join([]string{BasePathV1, path}, "/"),
+		Scheme:   schemeV1,
+		Host:     hostV1,
+		Path:     strings.Join([]string{basePathV1, path}, "/"),
 		RawQuery: values.Encode(),
 	}
 	return u.String()
 }
 
 // Version return the client version
-func (c *ClientV1) Version() int {
+func (c *clientV1) Version() Version {
 	return V1
 }
 
 // SoundSearch query the freesound v1 API sound search resource
 // see http://www.freesound.org/docs/api/resources_apiv1.html#sound-search-resource
-func (c *ClientV1) SoundSearch(query SoundSearchQuery) (*SoundSearchResult, error) {
+func (c *clientV1) SoundSearch(query SoundSearchQuery) (*SoundSearchResult, error) {
 	const method string = "GET"
 	const path string = "sounds/search"
 
@@ -45,7 +45,7 @@ func (c *ClientV1) SoundSearch(query SoundSearchQuery) (*SoundSearchResult, erro
 	if err != nil {
 		return nil, err
 	}
-	loc := c.Url(path, values)
+	loc := c.URL(path, values)
 	request, err := http.NewRequest(method, loc, nil)
 	if err != nil {
 		return nil, err
@@ -66,11 +66,11 @@ func (c *ClientV1) SoundSearch(query SoundSearchQuery) (*SoundSearchResult, erro
 	return results, nil
 }
 
-// NewClientV1 initialize a new freesound v1 API client
-func NewClientV1(apiKey string) (Client, error) {
-	c := ClientV1{
-		apiKey,
-		http.DefaultClient,
+// newclientV1 initialize a new freesound v1 API client
+func newClientV1(apiKey string) (Client, error) {
+	c := clientV1{
+		apiKey:     apiKey,
+		httpClient: &http.Client{},
 	}
 	return &c, nil
 }

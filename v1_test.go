@@ -8,7 +8,7 @@ import (
 
 const (
 	apiKeyVar = "FREESOUND_API_KEY"
-	baseUrl   = "http://www.freesound.org/api"
+	baseURL   = "http://www.freesound.org/api"
 )
 
 func getClient(t *testing.T) Client {
@@ -21,13 +21,12 @@ func getClient(t *testing.T) Client {
 }
 
 func TestNewClientV1(t *testing.T) {
-	_, err := NewClientV1("MY_API_KEY")
-	if err != nil {
+	if _, err := NewClientV1("MY_API_KEY"); err != nil {
 		t.Fail()
 	}
 }
 
-func TestClientUrl(t *testing.T) {
+func TestClientURL(t *testing.T) {
 	c, err := NewClientV1("MY_API_KEY")
 	if err != nil {
 		t.Fail()
@@ -35,24 +34,22 @@ func TestClientUrl(t *testing.T) {
 	values := url.Values{}
 	values.Add("foo", "bar baz")
 	client := c.(*ClientV1)
-	u := client.Url("sounds/search", values)
-	if u != baseUrl+"/sounds/search?api_key=MY_API_KEY&foo=bar+baz" {
+	u := client.URL("sounds/search", values)
+	if u != baseURL+"/sounds/search?api_key=MY_API_KEY&foo=bar+baz" {
 		t.Fail()
 	}
 }
 
 func TestSoundSearchV1(t *testing.T) {
 	c := getClient(t)
-	_, err := c.SoundSearch(SoundSearchQuery{Query:"cat meow"})
-	if err != nil {
+	if _, err := c.SoundSearch(SoundSearchQuery{Query: "cat meow"}); err != nil {
 		t.Fatal(err)
 	}
 	bc, err := NewClientV1("FOOBAR")
 	if err != nil {
 		t.Fatal(err)
 	}
-	_, err = bc.SoundSearch(SoundSearchQuery{Query:"hinge creak"})
-	if err == nil {
+	if _, err = bc.SoundSearch(SoundSearchQuery{Query: "hinge creak"}); err == nil {
 		t.Fail()
 	}
 }

@@ -2,21 +2,26 @@ package freesound
 
 import (
 	"errors"
+	"net/http"
 )
 
-type ClientV2 struct {
-	apiKey string
+type clientV2 struct {
+	apiKey     string
+	httpClient *http.Client
 }
 
-func (c *ClientV2) SoundSearch(query SoundSearchQuery) (*SoundSearchResult, error) {
+func (c *clientV2) SoundSearch(query SoundSearchQuery) (*SoundSearchResult, error) {
 	return nil, errors.New("Not Implemented")
 }
 
-func (c *ClientV2) Version() int {
+func (c *clientV2) Version() Version {
 	return V2
 }
 
-func NewClientV2(apiKey string) (Client, error) {
-	c := ClientV2{apiKey}
+func newClientV2(apiKey string) (Client, error) {
+	c := clientV2{
+		apiKey:     apiKey,
+		httpClient: &http.Client{},
+	}
 	return &c, nil
 }
