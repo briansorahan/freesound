@@ -104,9 +104,3 @@ type SoundSearchResult struct {
 	ID               int      `json:"id,omitempty"`
 	Pack             string   `json:"pack,omitempty"`
 }
-
-// Client represents a freesound API client.
-type Client interface {
-	SoundSearch(query SoundSearchQuery) (*SoundSearchResult, error)
-	Version() Version
-}
