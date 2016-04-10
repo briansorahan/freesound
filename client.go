@@ -7,8 +7,7 @@ import (
 
 // Client represents a freesound API client.
 type Client struct {
-	Key    string
-	Secret string
+	Token string
 
 	httpClient *http.Client
 }
@@ -18,10 +17,9 @@ func (c *Client) SoundSearch(query SoundSearchQuery) (*SoundSearchResult, error)
 }
 
 // NewClient creates a new freesound API client.
-func NewClient(key, secret string) (*Client, error) {
+func NewClient(token string) (*Client, error) {
 	return &Client{
-		Key:        key,
-		Secret:     secret,
+		Token:      token,
 		httpClient: &http.Client{},
 	}, nil
 }
