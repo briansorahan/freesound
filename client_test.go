@@ -1,27 +1,20 @@
 package freesound
 
 import (
-	"errors"
+	"os"
 	"testing"
 )
 
 func TestNewClient(t *testing.T) {
-	c1, err := NewClient("API_KEY", V1)
+	c, err := NewClient(os.Getenv("FREESOUND_API_TOKEN"))
 	if err != nil {
 		t.Fatal(err)
 	}
-	if c1.Version() != V1 {
-		t.Fatal(errors.New("wrong version"))
-	}
-	c2, err := NewClient("API_KEY", V2)
+	u, err := c.GetUser("wjoojoo")
 	if err != nil {
 		t.Fatal(err)
 	}
-	if c2.Version() != V2 {
-		t.Fatal(errors.New("wrong version"))
-	}
-	_, err = NewClient("API_KEY", 24)
-	if err == nil {
-		t.Fail()
+	if expected, got := "wjoojoo", u.Name; expected != got {
+		t.Fatalf("expected %s, got %s", expected, got)
 	}
 }
