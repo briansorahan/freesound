@@ -12,6 +12,7 @@ type Client struct {
 	httpClient *http.Client
 }
 
+// SoundSearch searches for sounds.
 func (c *Client) SoundSearch(query SoundSearchQuery) (*SoundSearchResult, error) {
 	return nil, errors.New("Not Implemented")
 }
