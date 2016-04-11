@@ -2,13 +2,14 @@ package main
 
 import (
 	"os"
+
+	"github.com/briansorahan/freesound"
 )
 
-func authorize() int {
-	if os.IsExist(tokenFile) {
-		f, err := os.Open(tokenFile)
-		if err != nil {
-		}
+func (f freesnd) authorize(c *freesound.Client, args []string) {
+	if len(args) < 1 {
+		usage()
+		os.Exit(1)
 	}
-	return 0
+	authCode := args[0]
 }
