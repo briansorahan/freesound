@@ -14,7 +14,6 @@ var secURL = strings.Replace(BaseURL, "http", "https", 1)
 func (c *Client) CodeURL() string {
 	values := url.Values{}
 	values.Set("client_id", c.ID)
-
 	return fmt.Sprintf("%s/oauth2/authorize?client_id=%s&response_type=code", secURL, c.ID)
 }
 

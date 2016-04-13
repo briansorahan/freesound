@@ -4,6 +4,14 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"path"
+)
+
+var (
+	pathHome   = path.Join(os.Getenv("HOME"), ".freesnd")
+	pathKey    = path.Join(pathHome, "key")
+	pathSecret = path.Join(pathHome, "secret")
+	pathAccess = path.Join(pathHome, "access")
 )
 
 func usage() {
@@ -20,20 +28,30 @@ func main() {
 		usage()
 		os.Exit(1)
 	}
-
-	// Initialize client.
-	f, err := newFreesnd()
+	// Ensure the .freesnd directory exists.
+	if err := makeHome(); err != nil {
+		log.Fatal(err)
+	}
+	// Commands that can run without a key and secret.
+	if os.Args[1] == "configure" {
+		if err := configure(os.Args[2:]); err != nil {
+			log.Fatal(err)
+		}
+		os.Exit(0)
+	}
+	// Get the key and secret.
+	key, secret, err := getKeySecret()
 	if err != nil {
 		log.Fatal(err)
 	}
-
+	// Initialize client.
+	f, err := newFreesnd(key, secret)
+	if err != nil {
+		log.Fatal(err)
+	}
 	switch os.Args[1] {
 	case "authorize":
 		f.authorize(os.Args[2:])
-	case "configure":
-		f.configure(os.Args[2:])
-	case "get-code":
-		f.getCode(os.Args[2:])
 	default:
 		fmt.Fprintf(os.Stderr, "Unrecognized command: %s\n", os.Args[1])
 		usage()

@@ -2,14 +2,9 @@ package main
 
 import (
 	"os"
-	"path"
 
 	"github.com/briansorahan/freesound"
 )
-
-const clientID = "ae3f7f9abc161775d6fe"
-
-var pathHome = path.Join(os.Getenv("HOME"), ".freesnd")
 
 // freesnd contains all the state of the program.
 type freesnd struct {
@@ -18,9 +13,9 @@ type freesnd struct {
 }
 
 // newFreesnd creates a new freesnd instance.
-func newFreesnd() (*freesnd, error) {
+func newFreesnd(key, secret string) (*freesnd, error) {
 	// Initialize the freesound client.
-	client, err := freesound.New(clientID)
+	client, err := freesound.New(key, secret)
 	if err != nil {
 		return nil, err
 	}
@@ -42,7 +37,7 @@ func newFreesnd() (*freesnd, error) {
 			return nil, err
 		}
 	}
-	f := freesnd{
+	return &freesnd{
 		c:    client,
 		home: home,
 	}, nil

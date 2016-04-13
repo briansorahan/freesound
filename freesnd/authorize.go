@@ -1,15 +1,11 @@
 package main
 
-import (
-	"os"
+import "os"
 
-	"github.com/briansorahan/freesound"
-)
-
-func (f freesnd) authorize(c *freesound.Client, args []string) {
+func (f freesnd) authorize(args []string) error {
 	if len(args) < 1 {
 		usage()
 		os.Exit(1)
 	}
-	authCode := args[0]
+	return nil
 }
