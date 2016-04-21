@@ -1,12 +1,9 @@
 package main
 
-import (
-	"fmt"
-
-	"github.com/briansorahan/freesound"
-)
+import "fmt"
 
 // getCode prints the URL that users must visit to generate an auth code.
-func getCode(c *freesound.Client, args []string) {
-	fmt.Println(c.CodeURL())
+func (f freesnd) getCode(args []string) error {
+	_, err := fmt.Println(f.c.CodeURL())
+	return err
 }

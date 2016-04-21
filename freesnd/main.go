@@ -12,6 +12,7 @@ var (
 	pathKey    = path.Join(pathHome, "key")
 	pathSecret = path.Join(pathHome, "secret")
 	pathAccess = path.Join(pathHome, "access")
+	pathCode   = path.Join(pathHome, "code")
 )
 
 func usage() {
@@ -50,8 +51,18 @@ func main() {
 		log.Fatal(err)
 	}
 	switch os.Args[1] {
+	case "get-code":
+		if err := f.getCode(os.Args[2:]); err != nil {
+			log.Fatal(err)
+		}
 	case "authorize":
-		f.authorize(os.Args[2:])
+		if err := f.authorize(os.Args[2:]); err != nil {
+			log.Fatal(err)
+		}
+	case "upload":
+		if err := f.upload(os.Args[2:]); err != nil {
+			log.Fatal(err)
+		}
 	default:
 		fmt.Fprintf(os.Stderr, "Unrecognized command: %s\n", os.Args[1])
 		usage()

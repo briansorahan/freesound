@@ -2,7 +2,6 @@ package main
 
 import (
 	"errors"
-	"fmt"
 	"os"
 )
 
@@ -14,21 +13,19 @@ var (
 // getKeySecret gets the key and secret.
 func getKeySecret() (string, string, error) {
 	// read key
-	key := []byte{}
 	keyFile, err := os.Open(pathKey)
 	if err != nil {
 		return "", "", err
 	}
-	nr, err := keyFile.Read(key)
-	if err != nil {
+	key := make([]byte, 128)
+	if _, err := keyFile.Read(key); err != nil {
 		return "", "", err
 	}
-	fmt.Printf("read %d bytes\n", nr)
 	if string(key) == "" {
 		return "", "", ErrEmptyKey
 	}
 	// read secret
-	secret := []byte{}
+	secret := make([]byte, 256)
 	secretFile, err := os.Open(pathSecret)
 	if err != nil {
 		return "", "", err
