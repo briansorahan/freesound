@@ -53,6 +53,11 @@ func TestPendingUploads(t *testing.T) {
 func TestUpload(t *testing.T) {
 	const audioFile = "/mnt/2TB102211/freesounds/wjoojoo/minibrute/blip01.wav"
 
+	// Skip the test if the audio file does not exist.
+	if _, err := os.Open(audioFile); os.IsNotExist(err) {
+		t.SkipNow()
+	}
+
 	key, secret := os.Getenv("FREESOUND_API_KEY"), os.Getenv("FREESOUND_API_SECRET")
 	c, err := New(key, secret)
 	if err != nil {
