@@ -1,18 +1,24 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"log"
 	"os"
 	"path"
 )
 
+// cliErrorHandling sets the behavior for errors
+// encountered when parsing CLI args.
+const cliErrorHandling = flag.ExitOnError
+
 var (
-	pathHome   = path.Join(os.Getenv("HOME"), ".freesnd")
-	pathKey    = path.Join(pathHome, "key")
-	pathSecret = path.Join(pathHome, "secret")
-	pathAccess = path.Join(pathHome, "access")
-	pathCode   = path.Join(pathHome, "code")
+	pathHome    = path.Join(os.Getenv("HOME"), ".freesnd")
+	pathKey     = path.Join(pathHome, "key")
+	pathSecret  = path.Join(pathHome, "secret")
+	pathAccess  = path.Join(pathHome, "access_token")
+	pathRefresh = path.Join(pathHome, "refresh_token")
+	pathCode    = path.Join(pathHome, "code")
 )
 
 func usage() {
@@ -21,6 +27,8 @@ func usage() {
 	fmt.Fprintf(os.Stderr, "COMMANDS\n")
 	fmt.Fprintf(os.Stderr, "authorize CODE           Fetch an access token and store locally.\n")
 	fmt.Fprintf(os.Stderr, "get-code                 Show a URL that allows you to generate an authorization code.\n")
+	fmt.Fprintf(os.Stderr, "meta FILE [FILE ...]     Display metadata for the given files.\n")
+	fmt.Fprintf(os.Stderr, "upload FILE [FILE ...]   Upload a file (requires oauth).\n")
 }
 
 func main() {
@@ -29,10 +37,12 @@ func main() {
 		usage()
 		os.Exit(1)
 	}
+
 	// Ensure the .freesnd directory exists.
 	if err := makeHome(); err != nil {
 		log.Fatal(err)
 	}
+
 	// Commands that can run without a key and secret.
 	if os.Args[1] == "configure" {
 		if err := configure(os.Args[2:]); err != nil {
@@ -40,31 +50,26 @@ func main() {
 		}
 		os.Exit(0)
 	}
+
 	// Get the key and secret.
 	key, secret, err := getKeySecret()
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	// Initialize client.
-	f, err := newFreesnd(key, secret)
+	app, err := newFreesnd(key, secret)
 	if err != nil {
 		log.Fatal(err)
 	}
-	switch os.Args[1] {
-	case "get-code":
-		if err := f.getCode(os.Args[2:]); err != nil {
-			log.Fatal(err)
-		}
-	case "authorize":
-		if err := f.authorize(os.Args[2:]); err != nil {
-			log.Fatal(err)
-		}
-	case "upload":
-		if err := f.upload(os.Args[2:]); err != nil {
-			log.Fatal(err)
-		}
-	default:
+
+	// Run the command
+	cf, supportedCommand := app.commands[os.Args[1]]
+	if !supportedCommand {
 		fmt.Fprintf(os.Stderr, "Unrecognized command: %s\n", os.Args[1])
 		usage()
+	}
+	if err := cf(os.Args[2:]); err != nil {
+		log.Fatal(err)
 	}
 }

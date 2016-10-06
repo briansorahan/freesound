@@ -6,10 +6,14 @@ import (
 	"github.com/briansorahan/freesound"
 )
 
+// commandFunc is a func that can run a command.
+type commandFunc func([]string) error
+
 // freesnd contains all the state of the program.
 type freesnd struct {
-	c    *freesound.Client
-	home *os.File
+	client   *freesound.Client
+	home     *os.File
+	commands map[string]commandFunc
 }
 
 // newFreesnd creates a new freesnd instance.
@@ -37,8 +41,17 @@ func newFreesnd(key, secret string) (*freesnd, error) {
 			return nil, err
 		}
 	}
-	return &freesnd{
-		c:    client,
-		home: home,
-	}, nil
+	app := &freesnd{
+		client: client,
+		home:   home,
+	}
+	app.commands = map[string]commandFunc{
+		"authorize":       app.authorize,
+		"get-code":        app.getCode,
+		"meta":            app.meta,
+		"pending-uploads": app.pendingUploads,
+		"refresh":         app.refreshToken,
+		"upload":          app.upload,
+	}
+	return app, nil
 }

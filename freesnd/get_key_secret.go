@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"errors"
 	"os"
 )
@@ -24,6 +25,7 @@ func getKeySecret() (string, string, error) {
 	if string(key) == "" {
 		return "", "", ErrEmptyKey
 	}
+
 	// read secret
 	secret := make([]byte, 256)
 	secretFile, err := os.Open(pathSecret)
@@ -36,5 +38,10 @@ func getKeySecret() (string, string, error) {
 	if string(secret) == "" {
 		return "", "", ErrEmptySecret
 	}
+
+	// strip trailing null bytes and whitespace
+	key = bytes.Trim(bytes.TrimSpace(key), "\x00")
+	secret = bytes.Trim(bytes.TrimSpace(secret), "\x00")
+
 	return string(key), string(secret), nil
 }

@@ -1,18 +1,22 @@
 package main
 
-import "os"
+import (
+	"bytes"
+	"os"
+)
 
 // setAccessToken sets the freesound client access token
-// by trying to read it from a file
+// by trying to read it from a file.
 func (f freesnd) setAccessToken() error {
-	cf, err := os.Open(pathCode)
+	accessTokenFile, err := os.Open(pathAccess)
 	if err != nil {
 		return err
 	}
-	code := make([]byte, 128)
-	if _, err := cf.Read(code); err != nil {
+	accessToken := make([]byte, 128)
+	if _, err := accessTokenFile.Read(accessToken); err != nil {
 		return err
 	}
-	f.c.SetAccessToken(string(code))
+	accessToken = bytes.TrimSpace(bytes.Trim(accessToken, "\x00"))
+	f.client.SetAccessToken(string(accessToken))
 	return nil
 }
