@@ -6,6 +6,7 @@ import (
 	"os"
 )
 
+// Common errors.
 var (
 	ErrEmptyKey    = errors.New("key is empty")
 	ErrEmptySecret = errors.New("secret is empty")

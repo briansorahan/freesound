@@ -15,7 +15,7 @@ func (f freesnd) refreshToken(args []string) error {
 	}
 	// Refresh the access token and write the new one to a file.
 	now := time.Now()
-	tokenResponse, err := f.client.RefreshAccessToken(string(refreshToken))
+	tokenResponse, err := f.client.RefreshAccessToken(refreshToken)
 	if err != nil {
 		return err
 	}

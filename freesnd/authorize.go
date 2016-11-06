@@ -10,7 +10,7 @@ import (
 // authorize stores an auth code, access token, and refresh token.
 func (f freesnd) authorize(args []string) error {
 	if len(args) < 1 {
-		usage(args)
+		_ = usage(args) // Never returns an error.
 		os.Exit(1)
 	}
 

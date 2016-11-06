@@ -15,7 +15,7 @@ func configure(args []string) error {
 	)
 	if err := fs.Parse(args); err != nil {
 		if err == flag.ErrHelp {
-			usage(args)
+			_ = usage(args) // Never returns an error.
 			os.Exit(1)
 		}
 		return err
