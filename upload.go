@@ -31,7 +31,7 @@ func (c *Client) Upload(pathAudio string, upload Upload) (*http.Response, error)
 }
 
 // uploadRequest returns a new *http.Request for a file upload.
-func uploadRequest(basepath string, file *os.File, upload Upload) (*http.Request, error) {
+func uploadRequest(basepath string, r io.Reader, upload Upload) (*http.Request, error) {
 	var (
 		u      = secURL + "/sounds/upload/"
 		body   = &bytes.Buffer{}
@@ -41,7 +41,7 @@ func uploadRequest(basepath string, file *os.File, upload Upload) (*http.Request
 	if err != nil {
 		return nil, err
 	}
-	if _, err := io.Copy(part, file); err != nil {
+	if _, err := io.Copy(part, r); err != nil {
 		return nil, err
 	}
 	if err := upload.WriteFields(writer); err != nil {
@@ -55,7 +55,7 @@ func uploadRequest(basepath string, file *os.File, upload Upload) (*http.Request
 	return req, err
 }
 
-// PendingUploadResponse represents a response to /sounds/pending_uploads/
+// PendingUploadsResponse represents a response to /sounds/pending_uploads/
 type PendingUploadsResponse struct {
 	PendingDescription []string            `json:"pending_description"`
 	PendingModeration  []PendingModeration `json:"pending_moderation"`
@@ -132,33 +132,27 @@ func (upload Upload) Validate() error {
 
 // WriteFields writes upload fields to a multipart writer.
 func (upload Upload) WriteFields(w *multipart.Writer) error {
-	if upload.Name != "" {
-		if err := w.WriteField("name", upload.Name); err != nil {
-			return err
-		}
+	if err := upload.writeField("name", upload.Name, w); err != nil {
+		return err
 	}
-	if upload.Tags != "" {
-		if err := w.WriteField("tags", upload.Tags); err != nil {
-			return err
-		}
+	if err := upload.writeField("tags", upload.Tags, w); err != nil {
+		return err
 	}
-	if upload.Description != "" {
-		if err := w.WriteField("description", upload.Description); err != nil {
-			return err
-		}
+	if err := upload.writeField("description", upload.Description, w); err != nil {
+		return err
 	}
-	if upload.License != "" {
-		if err := w.WriteField("license", upload.License); err != nil {
-			return err
-		}
+	if err := upload.writeField("license", upload.License, w); err != nil {
+		return err
 	}
-	if upload.Pack != "" {
-		if err := w.WriteField("pack", upload.Pack); err != nil {
-			return err
-		}
+	if err := upload.writeField("pack", upload.Pack, w); err != nil {
+		return err
 	}
-	if upload.Geotag != "" {
-		return w.WriteField("geotag", upload.Geotag)
+	return upload.writeField("geotag", upload.Geotag, w)
+}
+
+func (upload Upload) writeField(key, value string, w *multipart.Writer) error {
+	if value != "" {
+		return w.WriteField(key, value)
 	}
 	return nil
 }

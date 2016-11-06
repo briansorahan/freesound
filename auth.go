@@ -4,15 +4,13 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"net/http/httputil"
 	"net/url"
-	"os"
 	"strings"
 )
 
 var secURL = strings.Replace(BaseURL, "http", "https", 1)
 
-// CodeURL
+// CodeURL returns a url used to create an authorization code.
 func (c *Client) CodeURL() string {
 	values := url.Values{}
 	values.Set("client_id", c.ID)
@@ -69,34 +67,11 @@ func (c *Client) getAccessToken(code, grantType string) (AccessTokenResponse, er
 	values.Set("grant_type", grantType)
 
 	// Make the request.
-	u, err := url.Parse(secURL + "/oauth2/access_token/")
-	if err != nil {
-		return tokenResponse, err
-	}
-	// req, err := http.NewRequest("POST", u.String()+values.Encode(), nil)
-	// if err != nil {
-	// 	return tokenResponse, err
-	// }
-	// req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
-
-	// reqDump, err := httputil.DumpRequestOut(req, false)
-	// if err != nil {
-	// 	return tokenResponse, err
-	// }
-	// fmt.Fprintln(os.Stderr, string(reqDump))
-
-	resp, err := c.httpClient.PostForm(u.String(), values)
+	resp, err := c.httpClient.PostForm(secURL+"/oauth2/access_token/", values)
 	if err != nil {
 		return tokenResponse, err
 	}
 	defer func() { _ = resp.Body.Close() }()
-
-	// Dump the response.
-	respDump, err := httputil.DumpResponse(resp, false)
-	if err != nil {
-		return tokenResponse, err
-	}
-	fmt.Fprintln(os.Stderr, string(respDump))
 
 	if resp.StatusCode >= 300 {
 		return tokenResponse, errors.New(resp.Status)

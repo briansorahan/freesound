@@ -46,12 +46,19 @@ func newFreesnd(key, secret string) (*freesnd, error) {
 		home:   home,
 	}
 	app.commands = map[string]commandFunc{
-		"authorize":       app.authorize,
-		"get-code":        app.getCode,
-		"meta":            app.meta,
-		"pending-uploads": app.pendingUploads,
-		"refresh":         app.refreshToken,
-		"upload":          app.upload,
+		"authorize": app.authorize,
+		"get-code":  app.getCode,
+		"help":      usage,
+		"meta":      app.meta,
+		"pending-uploads": chain(
+			app.freshToken,
+			app.pendingUploads,
+		),
+		"refresh": app.refreshToken,
+		"upload": chain(
+			app.freshToken,
+			app.upload,
+		),
 	}
 	return app, nil
 }
